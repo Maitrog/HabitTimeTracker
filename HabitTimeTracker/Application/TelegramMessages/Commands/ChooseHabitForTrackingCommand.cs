@@ -22,9 +22,8 @@ public class ChooseHabitForTrackingCommand(ITelegramBotClient botClient, IServic
 
         var habits = await repository.GetActiveHabitsAsync(user.Id);
         
-        InlineKeyboardMarkup menu = new([
-            habits.Select(x => InlineKeyboardButton.WithCallbackData(x.Name, $"{TelegramCommand.StartHabit} {x.Id}"))
-        ]);
+        InlineKeyboardMarkup menu = new(
+            habits.Select(x => new[] { InlineKeyboardButton.WithCallbackData(x.Name, $"{TelegramCommand.StartHabit} {x.Id}") }));
 
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,
