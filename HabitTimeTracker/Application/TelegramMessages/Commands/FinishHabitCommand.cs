@@ -4,7 +4,7 @@ using Telegram.Bot;
 
 namespace HabitTimeTracker.Application.TelegramMessages.Commands;
 
-public class FinshHabitCommand(ITelegramBotClient botClient, IServiceProvider serviceProvider)
+public class FinishHabitCommand(ITelegramBotClient botClient, IServiceProvider serviceProvider)
     : TelegramCommandBase(botClient)
 {
     public override async Task Execute(User user, string? data, CancellationToken ct = default)
