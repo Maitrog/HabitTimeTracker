@@ -7,14 +7,14 @@ services:
     depends_on:
       - habit_time_tracker-postgres
     environment:
-      ConnectionStrings__HabitTimeTrackerBot: "Host=habit_time_tracker-postgres;Port=5432;Database=habit_time_tracker;Username=postgres;Password=postgres"
+      ConnectionStrings__HabitTimeTrackerBot: "Host=habit_time_tracker-postgres;Port=5432;Database=HabitTimeTrackerBot;Username=postgres;Password=postgres"
       TelegramBotSettings__Token: ${TELEGRAM_TOKEN}
 
   habit_time_tracker-postgres:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: habit_time_tracker
+      POSTGRES_DB: HabitTimeTrackerBot
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
