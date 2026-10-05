@@ -12,7 +12,8 @@ public abstract class TelegramCommandBase(ITelegramBotClient botClient)
     protected readonly InlineKeyboardMarkup DefaultMenu = new([
         [InlineKeyboardButton.WithCallbackData("Создать привычку", TelegramCommand.CreateHabit)],
         [InlineKeyboardButton.WithCallbackData("Начать привычку", TelegramCommand.ChooseHabit)],
-        [InlineKeyboardButton.WithCallbackData("Удалить привычку", TelegramCommand.DeleteHabit)]
+        [InlineKeyboardButton.WithCallbackData("Удалить привычку", TelegramCommand.DeleteHabit)],
+        [InlineKeyboardButton.WithCallbackData("Статистика", TelegramCommand.Statistics)]
     ]);
 
     public virtual async Task Execute(User user, string? data, CancellationToken ct = default) => await SendBaseAnswerAsync(user, ct);

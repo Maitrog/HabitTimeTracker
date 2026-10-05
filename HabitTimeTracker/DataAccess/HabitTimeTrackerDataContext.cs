@@ -61,6 +61,14 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
                            .ToListAsync();
     }
 
+    public async Task<List<HabitTotalTime>> GetHabitTotalTimesAsync(Guid userId, CancellationToken ct)
+    {
+        return await Habits.Where(h => h.UserId == userId && h.Deleted == false)
+                           .AsNoTracking()
+                           .Select(h => new HabitTotalTime(h.Name, h.TimePeriods.Sum(p => p.DurationInSecondes)))
+                           .ToListAsync(ct);
+    }
+
     public async Task<Habit?> GetHabitAsync(Guid habitId,  CancellationToken ct)
     {
         return await Habits.Where(h => h.Id == habitId && h.Deleted == false)

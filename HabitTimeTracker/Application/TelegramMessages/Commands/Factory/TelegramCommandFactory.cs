@@ -46,6 +46,9 @@ public class TelegramCommandFactory
         if (state == ChatState.HabitInProgress  && command == TelegramCommand.FinishHabit)
             return new FinshHabitCommand(botClient, _serviceProvider);
 
+        if (state == ChatState.Default && command == TelegramCommand.Statistics)
+            return new StatisticsCommand(botClient, _serviceProvider);
+
         return null;
     }
 }
