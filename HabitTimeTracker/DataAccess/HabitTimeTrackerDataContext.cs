@@ -8,9 +8,9 @@ namespace HabitTimeTracker.DataAccess;
 
 public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataContext> options) : DbContext(options)
 {
-    public DbSet<User> Users { get; set; }
+    private DbSet<User> Users { get; set; }
 
-    public DbSet<Habit> Habits { get; set; }
+    private DbSet<Habit> Habits { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
