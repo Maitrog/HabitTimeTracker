@@ -1,6 +1,8 @@
+using HabitTimeTracker.Application.TelegramMessages.Commands.Constants;
 using HabitTimeTracker.DataAccess;
 using HabitTimeTracker.Domain.Models;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HabitTimeTracker.Application.TelegramMessages.Commands;
 
@@ -21,6 +23,8 @@ public class StartHabitCreationCommand(ITelegramBotClient botClient, IServicePro
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,
             text: "Введите название привычки",
+            replyMarkup: new InlineKeyboardMarkup(
+                InlineKeyboardButton.WithCallbackData("Назад в главное меню", TelegramCommand.Reset)),
             cancellationToken: ct);
     }
 }

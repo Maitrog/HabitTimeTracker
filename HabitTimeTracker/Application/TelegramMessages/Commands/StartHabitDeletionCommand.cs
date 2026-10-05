@@ -23,7 +23,8 @@ public class StartHabitDeletionCommand(ITelegramBotClient botClient, IServicePro
         var habits = await repository.GetActiveHabitsAsync(user.Id);
         
         InlineKeyboardMarkup menu = new(
-            habits.Select(x => new[] { InlineKeyboardButton.WithCallbackData(x.Name, $"{TelegramCommand.DeleteHabit} {x.Id}") }));
+            habits.Select(x => new[] { InlineKeyboardButton.WithCallbackData(x.Name, $"{TelegramCommand.DeleteHabit} {x.Id}") })
+                .Append([InlineKeyboardButton.WithCallbackData("Назад в главное меню", TelegramCommand.Reset)]));
 
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,
