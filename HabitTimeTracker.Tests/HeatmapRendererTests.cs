@@ -5,11 +5,15 @@ namespace HabitTimeTracker.Tests;
 
 public class HeatmapRendererTests
 {
-    [Fact]
-    public void Render_ProducesPng()
+    [Theory]
+    [InlineData(HeatmapPeriod.Last7Days)]
+    [InlineData(HeatmapPeriod.Last30Days)]
+    [InlineData(HeatmapPeriod.CurrentMonth)]
+    [InlineData(HeatmapPeriod.CurrentYear)]
+    public void Render_ProducesPng(HeatmapPeriod period)
     {
         var model = HeatmapLayoutBuilder.Build(
-            HeatmapPeriod.Last7Days, new DateOnly(2026, 10, 6), new Dictionary<DateOnly, long>());
+            period, new DateOnly(2026, 10, 6), new Dictionary<DateOnly, long>());
 
         var png = HeatmapRenderer.Render(model);
 
