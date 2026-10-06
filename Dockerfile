@@ -8,4 +8,6 @@ RUN dotnet publish HabitTimeTracker/HabitTimeTracker.csproj -c Release -o /app -
 FROM mcr.microsoft.com/dotnet/runtime:10.0
 WORKDIR /app
 COPY --from=build /app .
+RUN apt-get update && apt-get install -y --no-install-recommends libfontconfig1 fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["dotnet", "HabitTimeTracker.dll"]

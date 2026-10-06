@@ -14,6 +14,8 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+        <PackageReference Include="SkiaSharp" Version="4.153.1" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.153.1" />
         <PackageReference Include="Telegram.Bot" Version="22.10.3.2" />
         <PackageReference Include="Maitrog.DtoSrcGen.Attributes" Version="1.0.1" />
         <PackageReference Include="Maitrog.DtoSrcGen" Version="1.0.1"
