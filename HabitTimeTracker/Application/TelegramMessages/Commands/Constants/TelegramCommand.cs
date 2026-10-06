@@ -17,4 +17,6 @@ public abstract class TelegramCommand
     public const string FinishHabit = "/finishhabit";
     
     public const string Statistics = "/statistics";
+
+    public const string EditLastPeriodFinish = "/editlastperiodfinish";
 }

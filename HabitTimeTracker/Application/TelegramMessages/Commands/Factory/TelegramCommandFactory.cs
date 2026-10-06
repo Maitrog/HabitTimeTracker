@@ -49,6 +49,12 @@ public class TelegramCommandFactory
         if (state == ChatState.Default && command == TelegramCommand.Statistics)
             return new StatisticsCommand(botClient, _serviceProvider);
 
+        if (state == ChatState.Default && command == TelegramCommand.EditLastPeriodFinish)
+            return new StartEditLastPeriodFinishCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.EditingLastPeriodFinish)
+            return new EditLastPeriodFinishCommand(botClient, _serviceProvider);
+
         return null;
     }
 }
