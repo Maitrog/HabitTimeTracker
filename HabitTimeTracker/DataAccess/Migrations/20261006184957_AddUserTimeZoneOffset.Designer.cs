@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using HabitTimeTracker.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HabitTimeTracker.DataAccess.Migrations
 {
     [DbContext(typeof(HabitTimeTrackerDataContext))]
-    partial class HabitTimeTrackerDataContextModelSnapshot : ModelSnapshot
+    [Migration("20261006184957_AddUserTimeZoneOffset")]
+    partial class AddUserTimeZoneOffset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

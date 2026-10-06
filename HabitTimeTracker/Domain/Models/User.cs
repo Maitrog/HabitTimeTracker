@@ -20,6 +20,8 @@ public class User
     
     public uint Version { get; private set; }
 
+    public int TimeZoneOffsetMinutes { get; private set; } = 180;
+
     private  User() {}
 
     public static User FromTelegramUser(Telegram.Bot.Types.User user) => new()
@@ -100,6 +102,26 @@ public class User
         ChatState = ChatState.AddingMissedPeriod;
         EditingHabit = new EditingHabit(habitId);
         Updated = DateTime.UtcNow;
+        return true;
+    }
+
+    public bool StartChangingTimeZone()
+    {
+        if (ChatState != ChatState.Default)
+            return false;
+
+        ChatState = ChatState.ChangingTimeZone;
+        Updated = DateTime.UtcNow;
+        return true;
+    }
+
+    public bool SetTimeZoneOffsetMinutes(int minutes)
+    {
+        if (minutes is < -720 or > 840)
+            return false;
+
+        TimeZoneOffsetMinutes = minutes;
+        ResetState();
         return true;
     }
 

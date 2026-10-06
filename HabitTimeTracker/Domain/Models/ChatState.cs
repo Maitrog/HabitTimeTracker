@@ -10,4 +10,5 @@ public enum ChatState
     EditingLastPeriodFinish,
     ChoosingHabitForMissedPeriod,
     AddingMissedPeriod,
+    ChangingTimeZone,
 }

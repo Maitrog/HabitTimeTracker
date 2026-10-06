@@ -64,6 +64,12 @@ public class TelegramCommandFactory
         if (state == ChatState.AddingMissedPeriod)
             return new AddMissedPeriodCommand(botClient, _serviceProvider);
 
+        if (state == ChatState.Default && command == TelegramCommand.TimeZone)
+            return new StartTimeZoneChangeCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.ChangingTimeZone)
+            return new SetTimeZoneCommand(botClient, _serviceProvider);
+
         return null;
     }
 }

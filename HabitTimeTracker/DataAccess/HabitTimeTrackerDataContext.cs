@@ -23,6 +23,7 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
         {
             b.ComplexProperty(u => u.Name);
             b.ComplexProperty(u => u.EditingHabit);
+            b.Property(u => u.TimeZoneOffsetMinutes).HasDefaultValue(180);
             b.HasIndex(u => u.TelegramId).IsUnique();
             b.Property(u => u.Version).IsRowVersion();
         });

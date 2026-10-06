@@ -14,7 +14,8 @@ public abstract class TelegramCommandBase(ITelegramBotClient botClient)
         [InlineKeyboardButton.WithCallbackData("Начать привычку", TelegramCommand.ChooseHabit)],
         [InlineKeyboardButton.WithCallbackData("Удалить привычку", TelegramCommand.DeleteHabit)],
         [InlineKeyboardButton.WithCallbackData("Добавить пропущенный период", TelegramCommand.AddMissedPeriod)],
-        [InlineKeyboardButton.WithCallbackData("Статистика", TelegramCommand.Statistics)]
+        [InlineKeyboardButton.WithCallbackData("Статистика", TelegramCommand.Statistics)],
+        [InlineKeyboardButton.WithCallbackData("Часовой пояс", TelegramCommand.TimeZone)]
     ]);
 
     public virtual async Task Execute(User user, string? data, CancellationToken ct = default) => await SendBaseAnswerAsync(user, ct);

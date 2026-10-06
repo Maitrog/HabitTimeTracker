@@ -23,4 +23,10 @@ public abstract class TelegramCommand
     public const string AddMissedPeriod = "/addmissedperiod";
 
     public const string AddMissedPeriodHabit = "/addmissedperiodhabit";
+
+    public const string TimeZone = "/timezone";
+
+    public const string HeatmapHabit = "/heatmaphabit";
+
+    public const string Heatmap = "/heatmap";
 }
