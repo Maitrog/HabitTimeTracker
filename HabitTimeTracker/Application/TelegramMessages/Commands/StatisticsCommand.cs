@@ -18,8 +18,11 @@ public class StatisticsCommand(ITelegramBotClient botClient, IServiceProvider se
             ? "У вас пока нет привычек"
             : string.Join("\n", habits.Select(h => $"{h.Name} — {FormatDuration(h.DurationInSeconds)}"));
 
-        var menu = new InlineKeyboardMarkup(
-            new[] { InlineKeyboardButton.WithCallbackData("Назад в главное меню", TelegramCommand.Reset) });
+        var buttons = habits
+            .Select(h => new[] { InlineKeyboardButton.WithCallbackData($"Heatmap: {h.Name}", $"{TelegramCommand.HeatmapHabit} {h.Id}") })
+            .Append([InlineKeyboardButton.WithCallbackData("Назад в главное меню", TelegramCommand.Reset)]);
+
+        var menu = new InlineKeyboardMarkup(buttons);
 
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,

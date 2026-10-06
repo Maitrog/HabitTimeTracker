@@ -67,7 +67,7 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
     {
         return await Habits.Where(h => h.UserId == userId && h.Deleted == false)
                            .AsNoTracking()
-                           .Select(h => new HabitTotalTime(h.Name, h.TimePeriods.Sum(p => p.DurationInSecondes)))
+                           .Select(h => new HabitTotalTime(h.Id, h.Name, h.TimePeriods.Sum(p => p.DurationInSecondes)))
                            .ToListAsync(ct);
     }
 
