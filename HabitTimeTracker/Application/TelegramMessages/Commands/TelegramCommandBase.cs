@@ -13,6 +13,7 @@ public abstract class TelegramCommandBase(ITelegramBotClient botClient)
         [InlineKeyboardButton.WithCallbackData("Создать привычку", TelegramCommand.CreateHabit)],
         [InlineKeyboardButton.WithCallbackData("Начать привычку", TelegramCommand.ChooseHabit)],
         [InlineKeyboardButton.WithCallbackData("Удалить привычку", TelegramCommand.DeleteHabit)],
+        [InlineKeyboardButton.WithCallbackData("Добавить пропущенный период", TelegramCommand.AddMissedPeriod)],
         [InlineKeyboardButton.WithCallbackData("Статистика", TelegramCommand.Statistics)]
     ]);
 

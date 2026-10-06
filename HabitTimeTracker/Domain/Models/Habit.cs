@@ -69,6 +69,26 @@ public class Habit
         return true;
     }
 
+    public bool AddMissedPeriod(DateTime startedAt, DateTime finishAt)
+    {
+        if (startedAt >= finishAt || finishAt > DateTime.UtcNow)
+            return false;
+
+        // O(n) скан — периодов на привычку мало; пересечение [startedAt, finishAt) с [p.StartedAt, p.FinishAt ?? +inf)
+        var hasOverlap = TimePeriods.Any(p =>
+            p.FinishAt is { } finish
+                ? startedAt < finish && p.StartedAt < finishAt
+                : finishAt > p.StartedAt);
+        if (hasOverlap)
+            return false;
+
+        var timePeriod = TimePeriod.StartHabit(Id, startedAt);
+        timePeriod.FinishHabit(finishAt);
+        TimePeriods.Add(timePeriod);
+        Updated = DateTime.UtcNow;
+        return true;
+    }
+
     public void Delete()
     {
         Deleted = true;

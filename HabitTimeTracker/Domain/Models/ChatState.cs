@@ -8,4 +8,6 @@ public enum ChatState
     ChoosingHabitForStart,
     HabitInProgress,
     EditingLastPeriodFinish,
+    ChoosingHabitForMissedPeriod,
+    AddingMissedPeriod,
 }

@@ -19,4 +19,8 @@ public abstract class TelegramCommand
     public const string Statistics = "/statistics";
 
     public const string EditLastPeriodFinish = "/editlastperiodfinish";
+
+    public const string AddMissedPeriod = "/addmissedperiod";
+
+    public const string AddMissedPeriodHabit = "/addmissedperiodhabit";
 }

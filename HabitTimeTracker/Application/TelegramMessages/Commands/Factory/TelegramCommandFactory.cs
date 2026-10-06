@@ -55,6 +55,15 @@ public class TelegramCommandFactory
         if (state == ChatState.EditingLastPeriodFinish)
             return new EditLastPeriodFinishCommand(botClient, _serviceProvider);
 
+        if (state == ChatState.Default && command == TelegramCommand.AddMissedPeriod)
+            return new StartAddMissedPeriodCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.ChoosingHabitForMissedPeriod && command == TelegramCommand.AddMissedPeriodHabit)
+            return new StartMissedPeriodInputCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.AddingMissedPeriod)
+            return new AddMissedPeriodCommand(botClient, _serviceProvider);
+
         return null;
     }
 }

@@ -82,6 +82,27 @@ public class User
         return true;
     }
 
+    public bool StartChoosingHabitForMissedPeriod()
+    {
+        if (ChatState != ChatState.Default)
+            return false;
+
+        ChatState = ChatState.ChoosingHabitForMissedPeriod;
+        Updated = DateTime.UtcNow;
+        return true;
+    }
+
+    public bool StartAddingMissedPeriod(Guid habitId)
+    {
+        if (ChatState != ChatState.ChoosingHabitForMissedPeriod)
+            return false;
+
+        ChatState = ChatState.AddingMissedPeriod;
+        EditingHabit = new EditingHabit(habitId);
+        Updated = DateTime.UtcNow;
+        return true;
+    }
+
     public void ResetState()
     {
         ChatState = ChatState.Default;
