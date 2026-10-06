@@ -18,6 +18,15 @@ public abstract class TelegramCommandBase(ITelegramBotClient botClient)
         [InlineKeyboardButton.WithCallbackData("Часовой пояс", TelegramCommand.TimeZone)]
     ]);
 
+    internal static string Truncate(string value, int max = 100) =>
+        value.Length <= max ? value : value[..(max - 1)] + "…";
+
+    internal static string FormatDuration(long seconds)
+    {
+        var time = TimeSpan.FromSeconds(seconds);
+        return $"{time.Days} д {time.Hours} ч {time.Minutes} мин {time.Seconds} сек";
+    }
+
     public virtual async Task Execute(User user, string? data, CancellationToken ct = default) => await SendBaseAnswerAsync(user, ct);
 
     protected Task SendBaseAnswerAsync(User user, CancellationToken ct) =>

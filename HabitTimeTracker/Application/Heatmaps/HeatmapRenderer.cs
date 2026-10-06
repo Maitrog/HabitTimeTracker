@@ -38,7 +38,7 @@ public static class HeatmapRenderer
         var canvas = surface.Canvas;
         canvas.Clear(SKColors.White);
 
-        using var typeface = SKTypeface.FromFamilyName("DejaVu Sans") ?? SKTypeface.Default;
+        using var typeface = SKTypeface.FromFamilyName("DejaVu Sans");
         using var font = new SKFont(typeface, 12);
         using var textPaint = new SKPaint { Color = Text, IsAntialias = true };
         using var cellPaint = new SKPaint { IsAntialias = true };

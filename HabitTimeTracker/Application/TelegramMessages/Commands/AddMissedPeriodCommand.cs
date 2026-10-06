@@ -28,7 +28,7 @@ public class AddMissedPeriodCommand(ITelegramBotClient botClient, IServiceProvid
             return;
         }
 
-        var habit = await repository.GetHabitAsync(user.EditingHabit!.HabitId, ct);
+        var habit = await repository.GetHabitAsync(user.EditingHabit!.HabitId, user.Id, ct);
         if (habit == null || !habit.AddMissedPeriod(startedAt, startedAt.AddMinutes(minutes)))
         {
             await BotClient.SendMessage(

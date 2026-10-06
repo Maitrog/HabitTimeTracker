@@ -31,6 +31,15 @@ public class DailyDurationCalculatorTests
     }
 
     [Fact]
+    public void PeriodEndingAtLocalMidnight_StaysOnSingleDay()
+    {
+        var start = new DateTime(2026, 10, 6, 23, 0, 0, DateTimeKind.Utc);
+        var result = DailyDurationCalculator.Calculate([Period(start, start.AddHours(1))], 0, DateTime.UtcNow);
+        Assert.Equal(3600, result[new DateOnly(2026, 10, 6)]);
+        Assert.False(result.ContainsKey(new DateOnly(2026, 10, 7)));
+    }
+
+    [Fact]
     public void OffsetMovesPeriodToNextLocalDay()
     {
         var start = new DateTime(2026, 10, 6, 22, 0, 0, DateTimeKind.Utc);

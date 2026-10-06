@@ -27,7 +27,7 @@ public class StartHeatmapCommand(ITelegramBotClient botClient, IServiceProvider 
             return;
         }
 
-        var habit = await repository.GetHabitAsync(habitId, ct);
+        var habit = await repository.GetHabitAsync(habitId, user.Id, ct);
         if (habit == null)
         {
             await SendBaseAnswerAsync(user, ct);

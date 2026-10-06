@@ -18,7 +18,7 @@ public class StartEditLastPeriodFinishCommand(ITelegramBotClient botClient, ISer
             return;
         }
 
-        var habit = await repository.GetHabitAsync(habitId, ct);
+        var habit = await repository.GetHabitAsync(habitId, user.Id, ct);
         if (habit == null || habit.UserId != user.Id ||
             habit.TimePeriods.LastOrDefault() is not { FinishAt: not null } ||
             !user.StartEditLastPeriodFinish(habitId))

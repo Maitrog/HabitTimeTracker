@@ -24,7 +24,7 @@ public class HeatmapCommand(ITelegramBotClient botClient, IServiceProvider servi
             return;
         }
 
-        var habit = await repository.GetHabitAsync(habitId, ct);
+        var habit = await repository.GetHabitAsync(habitId, user.Id, ct);
         if (habit == null)
         {
             await SendBaseAnswerAsync(user, ct);
@@ -40,7 +40,7 @@ public class HeatmapCommand(ITelegramBotClient botClient, IServiceProvider servi
         await BotClient.SendPhoto(
             chatId: user.TelegramId.Id,
             photo: InputFile.FromStream(new MemoryStream(png), "heatmap.png"),
-            caption: $"{habit.Name} — {model.Title}",
+            caption: $"{Truncate(habit.Name)} — {model.Title}",
             replyMarkup: StartHeatmapCommand.BuildPeriodMenu(habit.Id),
             cancellationToken: ct);
 
@@ -73,15 +73,9 @@ public class HeatmapCommand(ITelegramBotClient botClient, IServiceProvider servi
             return "За выбранный период записей нет.";
 
         var best = active.MaxBy(c => c.DurationSeconds)!;
-        return $"Всего: {Format(total)}\n" +
+        return $"Всего: {FormatDuration(total)}\n" +
                $"Активных дней: {active.Count}\n" +
-               $"Лучший день: {best.Date:dd.MM.yyyy} — {Format(best.DurationSeconds)}\n" +
-               $"Среднее в активный день: {Format(total / active.Count)}";
-    }
-
-    private static string Format(long seconds)
-    {
-        var time = TimeSpan.FromSeconds(seconds);
-        return $"{time.Days} д {time.Hours} ч {time.Minutes} мин";
+               $"Лучший день: {best.Date:dd.MM.yyyy} — {FormatDuration(best.DurationSeconds)}\n" +
+               $"Среднее в активный день: {FormatDuration(total / active.Count)}";
     }
 }

@@ -19,7 +19,7 @@ public class StatisticsCommand(ITelegramBotClient botClient, IServiceProvider se
             : string.Join("\n", habits.Select(h => $"{h.Name} — {FormatDuration(h.DurationInSeconds)}"));
 
         var buttons = habits
-            .Select(h => new[] { InlineKeyboardButton.WithCallbackData($"Heatmap: {h.Name}", $"{TelegramCommand.HeatmapHabit} {h.Id}") })
+            .Select(h => new[] { InlineKeyboardButton.WithCallbackData($"Heatmap: {Truncate(h.Name)}", $"{TelegramCommand.HeatmapHabit} {h.Id}") })
             .Append([InlineKeyboardButton.WithCallbackData("Назад в главное меню", TelegramCommand.Reset)]);
 
         var menu = new InlineKeyboardMarkup(buttons);
@@ -29,11 +29,5 @@ public class StatisticsCommand(ITelegramBotClient botClient, IServiceProvider se
             text: text,
             replyMarkup: menu,
             cancellationToken: ct);
-    }
-
-    private static string FormatDuration(long seconds)
-    {
-        var time = TimeSpan.FromSeconds(seconds);
-        return $"{time.Days} д {time.Hours} ч {time.Minutes} мин {time.Seconds} сек";
     }
 }

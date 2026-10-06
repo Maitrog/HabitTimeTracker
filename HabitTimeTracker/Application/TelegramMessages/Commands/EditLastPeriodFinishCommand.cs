@@ -26,7 +26,7 @@ public class EditLastPeriodFinishCommand(ITelegramBotClient botClient, IServiceP
             return;
         }
 
-        var habit = await repository.GetHabitAsync(editing.HabitId, ct);
+        var habit = await repository.GetHabitAsync(editing.HabitId, user.Id, ct);
         if (habit == null || !habit.EditLastPeriodFinish(finishAt))
         {
             await BotClient.SendMessage(
