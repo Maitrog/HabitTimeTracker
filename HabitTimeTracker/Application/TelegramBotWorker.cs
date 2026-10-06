@@ -14,6 +14,7 @@ using User = Domain.Models.User;
 
 public class TelegramBotWorker(
     IOptions<TelegramBotSettings> telegramBotSettings,
+    ILogger<TelegramBotWorker> logger,
     IServiceProvider serviceProvider)
     : BackgroundService
 {
@@ -42,6 +43,18 @@ public class TelegramBotWorker(
         using var scope = serviceProvider.CreateScope();
         var repository = scope.ServiceProvider.GetRequiredService<HabitTimeTrackerDataContext>();
         var messageHandler = scope.ServiceProvider.GetRequiredService<TextMessageHandler>();
+
+        var telegramUserId = update.CallbackQuery?.From.Id ?? update.Message?.From?.Id;
+        if (telegramUserId is null)
+            return;
+
+        if (_telegramBotSettings.AllowedUsers.Count > 0
+            && !_telegramBotSettings.AllowedUsers.Contains(telegramUserId.Value))
+        {
+            logger.LogInformation("Ignored {UpdateType} from unauthorized user {UserId}",
+                update.Type, telegramUserId.Value);
+            return;
+        }
 
         User? user = null;
         var command = string.Empty;
