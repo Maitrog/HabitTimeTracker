@@ -15,6 +15,8 @@ public class User
     public TelegramName Name { get; private set; }
     
     public ChatState ChatState { get; private set; }
+
+    public EditingHabit? EditingHabit { get; private set; }
     
     public uint Version { get; private set; }
 
@@ -69,9 +71,21 @@ public class User
         return true;
     }
     
+    public bool StartEditLastPeriodFinish(Guid habitId)
+    {
+        if (ChatState != ChatState.Default)
+            return false;
+
+        ChatState = ChatState.EditingLastPeriodFinish;
+        EditingHabit = new EditingHabit(habitId);
+        Updated = DateTime.UtcNow;
+        return true;
+    }
+
     public void ResetState()
     {
         ChatState = ChatState.Default;
+        EditingHabit = null;
         Updated = DateTime.UtcNow;
     }
 }

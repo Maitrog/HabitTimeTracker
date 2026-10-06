@@ -7,4 +7,5 @@ public enum ChatState
     HabitDeletion,
     ChoosingHabitForStart,
     HabitInProgress,
+    EditingLastPeriodFinish,
 }

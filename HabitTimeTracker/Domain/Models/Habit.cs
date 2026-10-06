@@ -56,6 +56,19 @@ public class Habit
         return true;
     }
 
+    public bool EditLastPeriodFinish(DateTime finishAt)
+    {
+        var lastPeriod = TimePeriods.LastOrDefault();
+        if (lastPeriod is not { FinishAt: not null })
+            return false;
+
+        if (finishAt <= lastPeriod.StartedAt || finishAt > DateTime.UtcNow)
+            return false;
+
+        lastPeriod.FinishHabit(finishAt);
+        return true;
+    }
+
     public void Delete()
     {
         Deleted = true;

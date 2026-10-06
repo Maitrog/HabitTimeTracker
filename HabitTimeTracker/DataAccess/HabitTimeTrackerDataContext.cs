@@ -22,6 +22,7 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
         modelBuilder.Entity<User>(b =>
         {
             b.ComplexProperty(u => u.Name);
+            b.ComplexProperty(u => u.EditingHabit);
             b.HasIndex(u => u.TelegramId).IsUnique();
             b.Property(u => u.Version).IsRowVersion();
         });
