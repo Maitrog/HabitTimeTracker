@@ -40,15 +40,8 @@ public class HeatmapCommand(ITelegramBotClient botClient, IServiceProvider servi
         await BotClient.SendPhoto(
             chatId: user.TelegramId.Id,
             photo: InputFile.FromStream(new MemoryStream(png), "heatmap.png"),
-            caption: $"{Truncate(habit.Name)} — {model.Title}",
+            caption: BuildSummary(model),
             replyMarkup: StartHeatmapCommand.BuildPeriodMenu(habit.Id),
-            cancellationToken: ct);
-
-        await BotClient.SendMessage(
-            chatId: user.TelegramId.Id,
-            text: BuildSummary(model),
-            replyMarkup: new InlineKeyboardMarkup(
-                new[] { InlineKeyboardButton.WithCallbackData("Назад в статистику", TelegramCommand.Statistics) }),
             cancellationToken: ct);
     }
 
