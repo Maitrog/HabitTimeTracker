@@ -5,7 +5,8 @@ services:
     build: .
     restart: unless-stopped
     depends_on:
-      - habit_time_tracker-postgres
+      habit_time_tracker-postgres:
+        condition: service_healthy
     environment:
       ConnectionStrings__HabitTimeTrackerBot: "Host=habit_time_tracker-postgres;Port=5432;Database=HabitTimeTrackerBot;Username=postgres;Password=postgres"
       TelegramBotSettings__Token: ${TELEGRAM_TOKEN}
@@ -19,6 +20,12 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - habit_time_tracker_pgdata:/var/lib/postgresql/data
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d HabitTimeTrackerBot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+      
 volumes:
   habit_time_tracker_pgdata:
