@@ -41,7 +41,10 @@ cd HabitTimeTracker
 3. Создать файл `.env` рядом с `compose.yml`:
 ```bash
 TELEGRAM_TOKEN=<токен бота>
+ALLOWED_USER_0=<ваш Telegram user ID>
 ```
+
+ID пользователя можно узнать у [@userinfobot](https://t.me/userinfobot); список можно оставить пустым — тогда доступ не фильтруется.
 
 compose поднимает приложение и PostgreSQL 16, миграции применяются автоматически при старте.
 

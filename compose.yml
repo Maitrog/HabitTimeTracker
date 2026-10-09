@@ -10,6 +10,8 @@ services:
     environment:
       ConnectionStrings__HabitTimeTrackerBot: "Host=habit_time_tracker-postgres;Port=5432;Database=HabitTimeTrackerBot;Username=postgres;Password=postgres"
       TelegramBotSettings__Token: ${TELEGRAM_TOKEN}
+      TelegramBotSettings__AllowedUsers__0: ${ALLOWED_USER_0:-}
+      TelegramBotSettings__AllowedUsers__1: ${ALLOWED_USER_1:-}
 
   habit_time_tracker-postgres:
     image: postgres:16-alpine
