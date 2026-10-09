@@ -403,3 +403,6 @@ FodyWeavers.xsd
 
 *.dev.json
 *.Development.json
+
+[Dd]ocs/
+.superpowers/
