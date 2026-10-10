@@ -42,17 +42,7 @@ public class User
         Updated = DateTime.UtcNow;
         return true;
     }
-    
-    public bool StartHabitDeletion()
-    {
-        if (ChatState != ChatState.Default)
-            return false;
 
-        ChatState = ChatState.HabitDeletion;
-        Updated = DateTime.UtcNow;
-        return true;
-    }
-    
     public bool ChooseHabitForTracking()
     {
         if (ChatState != ChatState.Default)
@@ -84,19 +74,9 @@ public class User
         return true;
     }
 
-    public bool StartChoosingHabitForMissedPeriod()
-    {
-        if (ChatState != ChatState.Default)
-            return false;
-
-        ChatState = ChatState.ChoosingHabitForMissedPeriod;
-        Updated = DateTime.UtcNow;
-        return true;
-    }
-
     public bool StartAddingMissedPeriod(Guid habitId)
     {
-        if (ChatState != ChatState.ChoosingHabitForMissedPeriod)
+        if (ChatState != ChatState.Default)
             return false;
 
         ChatState = ChatState.AddingMissedPeriod;

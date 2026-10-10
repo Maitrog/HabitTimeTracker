@@ -21,7 +21,7 @@ public class TelegramCommandFactory
     {
         if (command == TelegramCommand.Start)
             return new StartCommand(botClient);
-        
+
         if (command == TelegramCommand.Reset)
             return new ResetCommand(botClient, _serviceProvider);
 
@@ -31,12 +31,6 @@ public class TelegramCommandFactory
         if (state == ChatState.HabitCreation)
             return new CreateHabitCommand(botClient, _serviceProvider);
 
-        if (state == ChatState.Default && command == TelegramCommand.DeleteHabit)
-            return new StartHabitDeletionCommand(botClient, _serviceProvider);
-
-        if (state == ChatState.HabitDeletion)
-            return new DeleteHabitCommand(botClient, _serviceProvider);
-        
         if (state == ChatState.Default && command == TelegramCommand.ChooseHabit)
             return new ChooseHabitForTrackingCommand(botClient, _serviceProvider);
 
@@ -46,11 +40,20 @@ public class TelegramCommandFactory
         if (state == ChatState.HabitInProgress  && command == TelegramCommand.FinishHabit)
             return new FinishHabitCommand(botClient, _serviceProvider);
 
+        if (state == ChatState.Default && command == TelegramCommand.HabitManagement)
+            return new HabitManagementCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.Default && command == TelegramCommand.DeleteHabit)
+            return new DeleteHabitCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.Default && command == TelegramCommand.AddMissedPeriodHabit)
+            return new StartMissedPeriodInputCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.AddingMissedPeriod)
+            return new AddMissedPeriodCommand(botClient, _serviceProvider);
+
         if (state == ChatState.Default && command == TelegramCommand.Statistics)
             return new StatisticsCommand(botClient, _serviceProvider);
-
-        if (state == ChatState.Default && command == TelegramCommand.HeatmapHabit)
-            return new StartHeatmapCommand(botClient, _serviceProvider);
 
         if (state == ChatState.Default && command == TelegramCommand.Heatmap)
             return new HeatmapCommand(botClient, _serviceProvider);
@@ -60,15 +63,6 @@ public class TelegramCommandFactory
 
         if (state == ChatState.EditingLastPeriodFinish)
             return new EditLastPeriodFinishCommand(botClient, _serviceProvider);
-
-        if (state == ChatState.Default && command == TelegramCommand.AddMissedPeriod)
-            return new StartAddMissedPeriodCommand(botClient, _serviceProvider);
-
-        if (state == ChatState.ChoosingHabitForMissedPeriod && command == TelegramCommand.AddMissedPeriodHabit)
-            return new StartMissedPeriodInputCommand(botClient, _serviceProvider);
-
-        if (state == ChatState.AddingMissedPeriod)
-            return new AddMissedPeriodCommand(botClient, _serviceProvider);
 
         if (state == ChatState.Default && command == TelegramCommand.TimeZone)
             return new StartTimeZoneChangeCommand(botClient, _serviceProvider);

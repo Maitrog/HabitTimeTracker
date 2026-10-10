@@ -1,5 +1,4 @@
 using HabitTimeTracker.Application.Heatmaps;
-using HabitTimeTracker.Application.TelegramMessages.Commands.Constants;
 using HabitTimeTracker.DataAccess;
 using HabitTimeTracker.Domain.Heatmaps;
 using HabitTimeTracker.Domain.Models;
@@ -41,7 +40,7 @@ public class HeatmapCommand(ITelegramBotClient botClient, IServiceProvider servi
             chatId: user.TelegramId.Id,
             photo: InputFile.FromStream(new MemoryStream(png), "heatmap.png"),
             caption: BuildSummary(model),
-            replyMarkup: StartHeatmapCommand.BuildPeriodMenu(habit.Id),
+            replyMarkup: StatisticsCommand.BuildPeriodMenu(habit.Id),
             cancellationToken: ct);
     }
 
