@@ -29,14 +29,17 @@ public class StartHabitTrackingCommand(ITelegramBotClient botClient, IServicePro
             return;
         }
         
-        habit.StartNewPeriod(DateTime.UtcNow);
         if (!user.StartHabitTracking())
         {
             await SendBaseAnswerAsync(user, ct);
             return;
         }
 
-        await repository.UpdateHabitAsync(user, habit, ct);
+        var started = habit.StartNewPeriod(DateTime.UtcNow);
+        if (started)
+            await repository.UpdateHabitAsync(user, habit, ct);
+        else
+            await repository.UpdateUserAsync(user, ct); // Resume an open timer after a chat reset.
 
         var menu = new InlineKeyboardMarkup([
             [

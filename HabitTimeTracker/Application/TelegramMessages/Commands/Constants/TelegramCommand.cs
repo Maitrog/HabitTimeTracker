@@ -27,4 +27,9 @@ public abstract class TelegramCommand
     public const string TimeZone = "/timezone";
 
     public const string Heatmap = "/heatmap";
+
+    public const string StartEpochCompletion = "/endepoch";
+    public const string EpochHistory = "/epochs";
+    public const string SelectMissedPeriodEpoch = "/pickepoch";
+    public const string PageMissedPeriodEpochs = "/epochpage";
 }

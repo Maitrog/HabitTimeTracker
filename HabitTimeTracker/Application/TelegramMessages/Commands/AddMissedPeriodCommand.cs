@@ -1,8 +1,11 @@
 using System.Globalization;
+using HabitTimeTracker.Application.TelegramMessages.Commands.Constants;
 using HabitTimeTracker.DataAccess;
 using HabitTimeTracker.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HabitTimeTracker.Application.TelegramMessages.Commands;
 
@@ -28,8 +31,23 @@ public class AddMissedPeriodCommand(ITelegramBotClient botClient, IServiceProvid
             return;
         }
 
-        var habit = await repository.GetHabitAsync(user.EditingHabit!.HabitId, user.Id, ct);
-        if (habit == null || !habit.AddMissedPeriod(startedAt, startedAt.AddMinutes(minutes)))
+        var habit = user.EditingHabit is { } editing
+            ? await repository.GetHabitAsync(editing.HabitId, user.Id, ct) : null;
+        var selected = user.EditingHabit?.EpochId ?? habit?.CurrentEpochId;
+        var completed = habit != null && selected is Guid selectedId && selectedId != habit.CurrentEpochId
+            ? await repository.GetCompletedEpochAsync(habit.Id, user.Id, selectedId, ct) : null;
+        if (habit == null || (selected != habit.CurrentEpochId && completed == null))
+        {
+            user.ResetState();
+            await repository.UpdateUserAsync(user, ct);
+            await BotClient.SendMessage(user.TelegramId.Id, "Эпоха или привычка недоступна. Начните добавление заново.",
+                replyMarkup: DefaultMenu, cancellationToken: ct);
+            return;
+        }
+
+        // Check the duration before adding it to a user-supplied date.
+        if (minutes > (DateTime.UtcNow - startedAt).TotalMinutes ||
+            !habit.AddMissedPeriod(startedAt, startedAt.AddMinutes(minutes), completed))
         {
             await BotClient.SendMessage(
                 chatId: user.TelegramId.Id,
@@ -39,13 +57,24 @@ public class AddMissedPeriodCommand(ITelegramBotClient botClient, IServiceProvid
         }
 
         user.ResetState();
-        await repository.UpdateHabitAsync(user, habit, ct);
+        try
+        {
+            await repository.UpdateHabitAsync(user, habit, ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            await BotClient.SendMessage(user.TelegramId.Id, "Привычка или диалог изменились. Начните добавление заново.",
+                replyMarkup: new InlineKeyboardMarkup([[InlineKeyboardButton.WithCallbackData("В меню", TelegramCommand.Reset)]]),
+                cancellationToken: ct);
+            return;
+        }
 
+        var period = habit.TimePeriods.Last();
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,
-            text: FinishHabitCommand.BuildConfirmationText(habit),
+            text: FinishHabitCommand.BuildConfirmationText(period),
             parseMode: ParseMode.MarkdownV2,
-            replyMarkup: FinishHabitCommand.BuildMenu(habit.Id),
+            replyMarkup: period == habit.GetLastPeriod() ? FinishHabitCommand.BuildMenu(habit.Id) : DefaultMenu,
             cancellationToken: ct);
     }
 }

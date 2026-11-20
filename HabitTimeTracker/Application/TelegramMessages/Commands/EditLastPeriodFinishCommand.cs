@@ -41,7 +41,7 @@ public class EditLastPeriodFinishCommand(ITelegramBotClient botClient, IServiceP
 
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,
-            text: FinishHabitCommand.BuildConfirmationText(habit),
+            text: FinishHabitCommand.BuildConfirmationText(habit.GetLastPeriod()!),
             parseMode: ParseMode.MarkdownV2,
             replyMarkup: FinishHabitCommand.BuildMenu(habit.Id),
             cancellationToken: ct);

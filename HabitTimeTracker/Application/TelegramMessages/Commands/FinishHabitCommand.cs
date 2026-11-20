@@ -10,13 +10,12 @@ namespace HabitTimeTracker.Application.TelegramMessages.Commands;
 public class FinishHabitCommand(ITelegramBotClient botClient, IServiceProvider serviceProvider)
     : TelegramCommandBase(botClient)
 {
-    internal static string BuildConfirmationText(Habit habit)
+    internal static string BuildConfirmationText(TimePeriod period)
     {
-        var lastPeriod = habit.TimePeriods.Last();
         return $"Привычка записана:\n" +
-               $"Начало: `{lastPeriod.StartedAt:dd.MM.yyyy HH:mm:ss}`\n" +
-               $"Завершение: `{lastPeriod.FinishAt:dd.MM.yyyy HH:mm:ss}`\n" +
-               $"Затраченное время: {lastPeriod.DurationInSecondes} секунд";
+               $"Начало: `{period.StartedAt:dd.MM.yyyy HH:mm:ss}`\n" +
+               $"Завершение: `{period.FinishAt:dd.MM.yyyy HH:mm:ss}`\n" +
+               $"Затраченное время: {period.DurationInSecondes} секунд";
     }
 
     internal static InlineKeyboardMarkup BuildMenu(Guid habitId) => new([
@@ -44,14 +43,19 @@ public class FinishHabitCommand(ITelegramBotClient botClient, IServiceProvider s
             return;
         }
 
-        habit.FinishLastPeriod(DateTime.UtcNow);
+        var period = habit.TimePeriods.FirstOrDefault(p => p.FinishAt is null);
+        if (period == null || !habit.FinishLastPeriod(DateTime.UtcNow))
+        {
+            await SendBaseAnswerAsync(user, ct);
+            return;
+        }
         user.ResetState();
 
         await repository.UpdateHabitAsync(user, habit, ct);
 
         await BotClient.SendMessage(
             chatId: user.TelegramId.Id,
-            text: BuildConfirmationText(habit),
+            text: BuildConfirmationText(period),
             parseMode: ParseMode.MarkdownV2,
             replyMarkup: BuildMenu(habit.Id),
             cancellationToken: ct);

@@ -13,6 +13,20 @@ public class TelegramCommandFactoryTests
         new(new ConfigurationBuilder().Build(), new ServiceCollection().BuildServiceProvider());
 
     [Fact]
+    public void EpochActions_RouteOnlyInTheirDialogStates()
+    {
+        var factory = NewFactory();
+        Assert.IsType<StartEpochCompletionCommand>(factory.Create(null!, ChatState.Default, "/endepoch"));
+        Assert.IsType<EpochHistoryCommand>(factory.Create(null!, ChatState.Default, "/epochs"));
+        Assert.IsType<CompleteEpochCommand>(factory.Create(null!, ChatState.NamingEpoch, "Книга"));
+        Assert.IsType<ResetCommand>(factory.Create(null!, ChatState.NamingEpoch, "/reset"));
+        Assert.Null(factory.Create(null!, ChatState.HabitInProgress, "/endepoch"));
+        Assert.IsType<SelectMissedPeriodEpochCommand>(factory.Create(null!, ChatState.ChoosingMissedPeriodEpoch, "/pickepoch"));
+        Assert.IsType<SelectMissedPeriodEpochCommand>(factory.Create(null!, ChatState.ChoosingMissedPeriodEpoch, "/epochpage"));
+        Assert.Null(factory.Create(null!, ChatState.Default, "/pickepoch"));
+    }
+
+    [Fact]
     public void HabitManagementRoutes_FromDefault()
     {
         var factory = NewFactory();

@@ -108,9 +108,9 @@ public class User
     public bool AcceptsEpochDialogInput(bool isCallback, int? callbackMessageId, int? replyToMessageId) =>
         ChatState switch
         {
-            ChatState.NamingEpoch => !isCallback && EditingHabit?.PromptMessageId is int prompt
+            ChatState.NamingEpoch => !isCallback && EditingHabit?.PromptMessageId is { } prompt
                 && replyToMessageId == prompt,
-            ChatState.ChoosingMissedPeriodEpoch => isCallback && EditingHabit?.PromptMessageId is int prompt
+            ChatState.ChoosingMissedPeriodEpoch => isCallback && EditingHabit?.PromptMessageId is { } prompt
                 && callbackMessageId == prompt,
             ChatState.AddingMissedPeriod => !isCallback,
             _ => true

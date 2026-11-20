@@ -1,7 +1,9 @@
+using HabitTimeTracker.Application.TelegramMessages.Commands.Constants;
 using HabitTimeTracker.DataAccess;
 using HabitTimeTracker.Domain.Models;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HabitTimeTracker.Application.TelegramMessages.Commands;
 
@@ -12,16 +14,31 @@ public class StartMissedPeriodInputCommand(ITelegramBotClient botClient, IServic
     {
         var repository = serviceProvider.GetRequiredService<HabitTimeTrackerDataContext>();
 
-        if (data == null || !Guid.TryParse(data, out var habitId) ||
-            !user.StartAddingMissedPeriod(habitId))
+        if (!Guid.TryParse(data, out var habitId) || await repository.GetHabitAsync(habitId, user.Id, ct) is not { } habit)
         {
             await SendBaseAnswerAsync(user, ct);
             return;
         }
 
-        await repository.UpdateUserAsync(user, ct);
+        var epochs = await repository.GetCompletedEpochsAsync(habit.Id, user.Id, ct);
+        if (epochs.Count == 0)
+        {
+            if (!user.StartAddingMissedPeriod(habit.Id, habit.CurrentEpochId))
+                return;
+            await repository.UpdateUserAsync(user, ct);
+            await SendPeriodPromptAsync(BotClient, user, ct);
+            return;
+        }
 
-        await BotClient.SendMessage(
+        var prompt = await BotClient.SendMessage(user.TelegramId.Id, "Выберите эпоху для пропущенного периода:",
+            replyMarkup: SelectMissedPeriodEpochCommand.BuildMenu(habit, epochs, user.TimeZoneOffsetMinutes, 0),
+            cancellationToken: ct);
+        if (user.StartChoosingMissedPeriodEpoch(habit.Id, prompt.Id))
+            await repository.UpdateUserAsync(user, ct);
+    }
+
+    internal static Task SendPeriodPromptAsync(ITelegramBotClient bot, User user, CancellationToken ct) =>
+        bot.SendMessage(
             chatId: user.TelegramId.Id,
             text: "Введите пропущенный период в формате:\n" +
                   "```\n" +
@@ -30,6 +47,6 @@ public class StartMissedPeriodInputCommand(ITelegramBotClient botClient, IServic
                   "Первая часть — дата и время начала, вторая — длительность в минутах\n" +
                   "Время интерпретируется как UTC",
             parseMode: ParseMode.MarkdownV2,
+            replyMarkup: new InlineKeyboardMarkup([[InlineKeyboardButton.WithCallbackData("Отмена", TelegramCommand.Reset)]]),
             cancellationToken: ct);
-    }
 }

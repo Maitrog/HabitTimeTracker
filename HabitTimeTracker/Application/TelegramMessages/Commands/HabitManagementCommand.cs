@@ -57,6 +57,8 @@ public class HabitManagementCommand(ITelegramBotClient botClient, IServiceProvid
         var menu = new InlineKeyboardMarkup([
             [InlineKeyboardButton.WithCallbackData("Удалить привычку", $"{TelegramCommand.DeleteHabit} {habit.Id}")],
             [InlineKeyboardButton.WithCallbackData("Добавить пропущенный период", $"{TelegramCommand.AddMissedPeriodHabit} {habit.Id}")],
+            [InlineKeyboardButton.WithCallbackData("Завершить эпоху", $"{TelegramCommand.StartEpochCompletion} {habit.Id}")],
+            [InlineKeyboardButton.WithCallbackData("Эпохи", $"{TelegramCommand.EpochHistory} {habit.Id}")],
             [InlineKeyboardButton.WithCallbackData("Статистика", $"{TelegramCommand.Statistics} {habit.Id}")],
             [InlineKeyboardButton.WithCallbackData("Назад к привычкам", TelegramCommand.HabitManagement)]
         ]);

@@ -25,6 +25,20 @@ public class TelegramCommandFactory
         if (command == TelegramCommand.Reset)
             return new ResetCommand(botClient, _serviceProvider);
 
+        if (state == ChatState.NamingEpoch)
+            return new CompleteEpochCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.ChoosingMissedPeriodEpoch &&
+            command is TelegramCommand.SelectMissedPeriodEpoch or TelegramCommand.PageMissedPeriodEpochs)
+            return new SelectMissedPeriodEpochCommand(botClient, _serviceProvider,
+                command == TelegramCommand.PageMissedPeriodEpochs);
+
+        if (state == ChatState.Default && command == TelegramCommand.StartEpochCompletion)
+            return new StartEpochCompletionCommand(botClient, _serviceProvider);
+
+        if (state == ChatState.Default && command == TelegramCommand.EpochHistory)
+            return new EpochHistoryCommand(botClient, _serviceProvider);
+
         if (state == ChatState.Default && command == TelegramCommand.CreateHabit)
             return new StartHabitCreationCommand(botClient, _serviceProvider);
 
