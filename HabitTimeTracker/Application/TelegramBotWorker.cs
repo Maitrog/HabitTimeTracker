@@ -13,6 +13,7 @@ namespace HabitTimeTracker.Application;
 using User = Domain.Models.User;
 
 public class TelegramBotWorker(
+    ITelegramBotClient botClient,
     IOptions<TelegramBotSettings> telegramBotSettings,
     ILogger<TelegramBotWorker> logger,
     IServiceProvider serviceProvider)
@@ -22,8 +23,6 @@ public class TelegramBotWorker(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var botClient = new TelegramBotClient(_telegramBotSettings.Token);
-
         ReceiverOptions receiverOptions = new()
         {
             AllowedUpdates = [UpdateType.Message, UpdateType.CallbackQuery]
