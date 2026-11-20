@@ -41,9 +41,9 @@ public class StartMissedPeriodInputCommand(ITelegramBotClient botClient, IServic
         bot.SendMessage(
             chatId: user.TelegramId.Id,
             text: "Введите пропущенный период в формате:\n" +
-                  "```\n" +
-                  "06.10.2026 14:30; 45" +
-                  "```\n" +
+                  "`" +
+                  DateTime.UtcNow.AddMinutes(-45).ToString("dd.MM.yyyy HH:mm") + "; 45" +
+                  "`\n" +
                   "Первая часть — дата и время начала, вторая — длительность в минутах\n" +
                   "Время интерпретируется как UTC",
             parseMode: ParseMode.MarkdownV2,
