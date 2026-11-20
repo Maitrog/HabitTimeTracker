@@ -96,7 +96,15 @@ public class TelegramBotWorker(
             }
         }
 
-        await messageHandler.Handle(user, command, commandData, ct);
+        if (user == null)
+            return;
+
+        var callbackMessage = update.CallbackQuery?.Message;
+        var callbackMessageId = callbackMessage?.Chat.Id == telegramUserId ? callbackMessage?.Id : null;
+        var replyToMessageId = update.Message is { Type: MessageType.Text, Text: not null } text
+            && text.Chat.Id == telegramUserId ? text.ReplyToMessage?.Id : null;
+        await messageHandler.Handle(user, command, commandData, ct,
+            update.CallbackQuery != null, callbackMessageId, replyToMessageId);
     }
 
     private static Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
