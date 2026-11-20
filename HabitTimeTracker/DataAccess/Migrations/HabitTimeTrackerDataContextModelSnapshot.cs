@@ -23,6 +23,29 @@ namespace HabitTimeTracker.DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("HabitTimeTracker.Domain.Models.Epoch", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("HabitId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HabitId");
+
+                    b.ToTable("Epochs", (string)null);
+                });
+
             modelBuilder.Entity("HabitTimeTracker.Domain.Models.Habit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -31,6 +54,9 @@ namespace HabitTimeTracker.DataAccess.Migrations
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CurrentEpochId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
@@ -66,6 +92,9 @@ namespace HabitTimeTracker.DataAccess.Migrations
 
                     b.Property<long>("DurationInSecondes")
                         .HasColumnType("bigint");
+
+                    b.Property<Guid>("EpochId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("FinishAt")
                         .HasColumnType("timestamp with time zone");
@@ -114,8 +143,14 @@ namespace HabitTimeTracker.DataAccess.Migrations
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "EditingHabit", "HabitTimeTracker.Domain.Models.User.EditingHabit#EditingHabit", b1 =>
                         {
+                            b1.Property<Guid?>("EpochId")
+                                .HasColumnType("uuid");
+
                             b1.Property<Guid>("HabitId")
                                 .HasColumnType("uuid");
+
+                            b1.Property<int?>("PromptMessageId")
+                                .HasColumnType("integer");
                         });
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Name", "HabitTimeTracker.Domain.Models.User.Name#TelegramName", b1 =>
@@ -139,6 +174,15 @@ namespace HabitTimeTracker.DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HabitTimeTracker.Domain.Models.Epoch", b =>
+                {
+                    b.HasOne("HabitTimeTracker.Domain.Models.Habit", null)
+                        .WithMany()
+                        .HasForeignKey("HabitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HabitTimeTracker.Domain.Models.Habit", b =>

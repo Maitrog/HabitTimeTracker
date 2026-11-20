@@ -12,6 +12,8 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
 
     private DbSet<Habit> Habits { get; set; }
 
+    private DbSet<Epoch> Epochs => Set<Epoch>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<TelegramId>().HaveConversion<TelegramIdConverter>();
@@ -31,6 +33,14 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
         modelBuilder.Entity<Habit>(b =>
         {
             b.Property(u => u.Version).IsRowVersion();
+        });
+
+        modelBuilder.Entity<Epoch>(b =>
+        {
+            b.ToTable("Epochs");
+            b.Property(e => e.Id).ValueGeneratedNever();
+            b.Property(e => e.Name).HasMaxLength(Epoch.MaxNameLength).IsRequired();
+            b.HasOne<Habit>().WithMany().HasForeignKey(e => e.HabitId);
         });
     }
     public async Task<User?> GetUserByTelegramIdAsync(TelegramId telegramId)
@@ -84,6 +94,23 @@ public class HabitTimeTrackerDataContext(DbContextOptions<HabitTimeTrackerDataCo
         Habits.Update(habit);
         await SaveChangesAsync(ct);
     }
+
+    public async Task SaveCompletedEpochAsync(User user, Epoch epoch, CancellationToken ct)
+    {
+        Users.Update(user);
+        Epochs.Add(epoch);
+        await SaveChangesAsync(ct);
+    }
+
+    public Task<List<Epoch>> GetCompletedEpochsAsync(Guid habitId, Guid userId, CancellationToken ct) =>
+        VisibleEpochs(habitId, userId).OrderByDescending(e => e.CompletedAtUtc).ThenBy(e => e.Id).ToListAsync(ct);
+
+    public Task<Epoch?> GetCompletedEpochAsync(Guid habitId, Guid userId, Guid epochId, CancellationToken ct) =>
+        VisibleEpochs(habitId, userId).SingleOrDefaultAsync(e => e.Id == epochId, ct);
+
+    private IQueryable<Epoch> VisibleEpochs(Guid habitId, Guid userId) =>
+        Epochs.AsNoTracking().Where(e => e.HabitId == habitId &&
+            Habits.Any(h => h.Id == e.HabitId && h.UserId == userId && !h.Deleted));
 
     private sealed class TelegramIdConverter() : ValueConverter<TelegramId, long>(id => id.Id, value => new TelegramId(value));
 }

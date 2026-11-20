@@ -7,7 +7,7 @@ public class DailyDurationCalculatorTests
 {
     private static TimePeriod Period(DateTime start, DateTime? finish)
     {
-        var p = TimePeriod.StartHabit(Guid.NewGuid(), start);
+        var p = TimePeriod.StartHabit(Guid.NewGuid(), Guid.NewGuid(), start);
         if (finish is { } f)
             p.FinishHabit(f);
         return p;

@@ -74,16 +74,47 @@ public class User
         return true;
     }
 
-    public bool StartAddingMissedPeriod(Guid habitId)
+    public bool StartAddingMissedPeriod(Guid habitId, Guid? epochId = null) =>
+        StartHabitDialog(ChatState.AddingMissedPeriod, new EditingHabit(habitId, epochId));
+
+    public bool StartEpochCompletion(Guid habitId, Guid epochId, int promptId) =>
+        StartHabitDialog(ChatState.NamingEpoch, new EditingHabit(habitId, epochId, promptId));
+
+    public bool StartChoosingMissedPeriodEpoch(Guid habitId, int promptId) =>
+        StartHabitDialog(ChatState.ChoosingMissedPeriodEpoch, new EditingHabit(habitId, PromptMessageId: promptId));
+
+    private bool StartHabitDialog(ChatState state, EditingHabit editing)
     {
         if (ChatState != ChatState.Default)
             return false;
 
-        ChatState = ChatState.AddingMissedPeriod;
-        EditingHabit = new EditingHabit(habitId);
+        ChatState = state;
+        EditingHabit = editing;
         Updated = DateTime.UtcNow;
         return true;
     }
+
+    public bool SelectMissedPeriodEpoch(Guid epochId)
+    {
+        if (ChatState != ChatState.ChoosingMissedPeriodEpoch || EditingHabit == null)
+            return false;
+
+        EditingHabit = new EditingHabit(EditingHabit.HabitId, epochId);
+        ChatState = ChatState.AddingMissedPeriod;
+        Updated = DateTime.UtcNow;
+        return true;
+    }
+
+    public bool AcceptsEpochDialogInput(bool isCallback, int? callbackMessageId, int? replyToMessageId) =>
+        ChatState switch
+        {
+            ChatState.NamingEpoch => !isCallback && EditingHabit?.PromptMessageId is int prompt
+                && replyToMessageId == prompt,
+            ChatState.ChoosingMissedPeriodEpoch => isCallback && EditingHabit?.PromptMessageId is int prompt
+                && callbackMessageId == prompt,
+            ChatState.AddingMissedPeriod => !isCallback,
+            _ => true
+        };
 
     public bool StartChangingTimeZone()
     {

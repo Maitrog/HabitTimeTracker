@@ -11,4 +11,6 @@ public enum ChatState
     EditingLastPeriodFinish = 5,
     AddingMissedPeriod = 7,
     ChangingTimeZone = 8,
+    NamingEpoch = 9,
+    ChoosingMissedPeriodEpoch = 10,
 }

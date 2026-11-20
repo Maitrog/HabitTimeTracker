@@ -13,15 +13,18 @@ public class TimePeriod
     public long DurationInSecondes { get; private set; }
     
     public Guid HabitId { get; private set; }
+
+    public Guid EpochId { get; private set; }
     
     [ForeignKey(nameof(HabitId))]
     public Habit? Habit { get; private set; }
     
     private TimePeriod() { }
 
-    public static TimePeriod StartHabit(Guid habitId, DateTime startedAt) => new()
+    public static TimePeriod StartHabit(Guid habitId, Guid epochId, DateTime startedAt) => new()
     {
         HabitId = habitId,
+        EpochId = epochId,
         StartedAt = startedAt,
     };
 
